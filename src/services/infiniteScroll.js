@@ -1,5 +1,5 @@
-import { state } from "../state.js";
 import { emit } from "../events.js";
+import { state } from "../state.js";
 
 export function initInfiniteScroll() {
   const sentinel = document.getElementById("scrollSentinel");
@@ -7,8 +7,10 @@ export function initInfiniteScroll() {
 
   const observer = new IntersectionObserver(
     (entries) => {
+      const [entry] = entries;
+
       const shouldLoad =
-        entries[0].isIntersecting &&
+        entry.isIntersecting &&
         !state.loading &&
         !state.loadingMore &&
         state.hasMore &&

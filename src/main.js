@@ -1,67 +1,74 @@
-import "./style.css";
-import { state } from "./state.js";
-import { on } from "./events.js";
+import "./styles/base.css";
 import { getPhotos, searchPhotos } from "./api.js";
-
-import { loadFavorites, updateBadges } from "./components/favorites.js";
-import { initDarkMode } from "./components/darkMode.js";
-import { setActiveNav, initSidebar } from "./components/sidebar.js";
-import { initHeader } from "./components/header.js";
-import { updateActiveTopic, initTopics } from "./components/topics.js";
+import { createApp } from "./components/app/app.js";
+import { initBackToTop } from "./components/back-to-top/backToTop.js";
 import {
-  showSkeleton,
-  renderGallery,
   appendPhotos,
+  renderGallery,
   showError,
   showLoadingMore,
+  showSkeleton,
   updateSearchLabel,
-} from "./components/gallery.js";
-import { openModal, initModal } from "./components/modal.js";
-import { initBackToTop } from "./components/backToTop.js";
-import { initInfiniteScroll } from "./components/infiniteScroll.js";
+} from "./components/gallery/gallery.js";
+import { initHeader } from "./components/header/header.js";
+import { initModal, openModal } from "./components/modal/modal.js";
+import { initSidebar, setActiveNav } from "./components/sidebar/sidebar.js";
+import { initTopics, updateActiveTopic } from "./components/topics/topics.js";
+import { on } from "./events.js";
+import { loadFavorites, updateBadges } from "./services/favorites.js";
+import { initInfiniteScroll } from "./services/infiniteScroll.js";
+import { initDarkMode } from "./services/theme.js";
+import { state } from "./state.js";
 
-async function goHome() {
+const PER_PAGE = 30;
+
+function mountApp() {
+  const app = document.getElementById("app");
+  app.replaceChildren(createApp());
+}
+
+function resetFeedState(searchTerm = null) {
   state.loading = true;
-  state.searchTerm = null;
+  state.searchTerm = searchTerm;
   state.page = 1;
   state.hasMore = true;
-  setActiveNav("home");
+}
+
+async function loadFeed({ view, searchTerm = null, request, errorMessage }) {
+  resetFeedState(searchTerm);
+  setActiveNav(view);
   updateSearchLabel();
   updateActiveTopic();
   showSkeleton();
   window.scrollTo({ top: 0, behavior: "smooth" });
 
   try {
-    state.photos = await getPhotos(1, 30);
-    state.hasMore = state.photos.length === 30;
+    state.photos = await request(1, PER_PAGE);
+    state.hasMore = state.photos.length === PER_PAGE;
+    state.loading = false;
     renderGallery();
-  } catch {
-    showError("Error al cargar las imágenes. Inténtalo de nuevo.");
+  } catch (error) {
+    showError(error instanceof Error ? error.message : errorMessage);
   } finally {
     state.loading = false;
   }
 }
 
-async function doSearch(query) {
-  state.loading = true;
-  state.searchTerm = query;
-  state.page = 1;
-  state.hasMore = true;
-  setActiveNav("explore");
-  updateSearchLabel();
-  updateActiveTopic();
-  showSkeleton();
-  window.scrollTo({ top: 0, behavior: "smooth" });
+async function goHome() {
+  await loadFeed({
+    view: "home",
+    request: getPhotos,
+    errorMessage: "Error al cargar las imagenes. Intentalo de nuevo.",
+  });
+}
 
-  try {
-    state.photos = await searchPhotos(query, 1, 30);
-    state.hasMore = state.photos.length === 30;
-    renderGallery();
-  } catch {
-    showError("Error en la búsqueda. Inténtalo de nuevo.");
-  } finally {
-    state.loading = false;
-  }
+async function doSearch(query) {
+  await loadFeed({
+    view: "explore",
+    searchTerm: query,
+    request: (page, perPage) => searchPhotos(query, page, perPage),
+    errorMessage: "Error en la busqueda. Intentalo de nuevo.",
+  });
 }
 
 function showFavorites() {
@@ -83,16 +90,16 @@ async function loadMore() {
 
   try {
     const data = state.searchTerm
-      ? await searchPhotos(state.searchTerm, nextPage, 30)
-      : await getPhotos(nextPage, 30);
+      ? await searchPhotos(state.searchTerm, nextPage, PER_PAGE)
+      : await getPhotos(nextPage, PER_PAGE);
 
-    const existingIds = new Set(state.photos.map((p) => p.id));
-    const unique = data.filter((p) => !existingIds.has(p.id));
+    const existingIds = new Set(state.photos.map((photo) => photo.id));
+    const unique = data.filter((photo) => !existingIds.has(photo.id));
     const startIndex = state.photos.length;
 
     state.photos.push(...unique);
     state.page = nextPage;
-    state.hasMore = data.length === 30;
+    state.hasMore = data.length === PER_PAGE;
     appendPhotos(unique, startIndex);
   } catch {
     state.hasMore = false;
@@ -104,9 +111,15 @@ async function loadMore() {
 
 on("nav:change", (view) => {
   switch (view) {
-    case "home": goHome(); break;
-    case "explore": doSearch("trending"); break;
-    case "favorites": showFavorites(); break;
+    case "home":
+      goHome();
+      break;
+    case "explore":
+      doSearch("trending");
+      break;
+    case "favorites":
+      showFavorites();
+      break;
   }
 });
 
@@ -118,6 +131,7 @@ on("favorites:changed", () => {
   if (state.activeView === "favorites") renderGallery();
 });
 
+mountApp();
 loadFavorites();
 initDarkMode();
 initSidebar();

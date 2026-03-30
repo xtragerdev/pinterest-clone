@@ -1,0 +1,264 @@
+.photo-card {
+  break-inside: avoid;
+  margin-bottom: 16px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--bg-card);
+  animation: photo-card-in 0.5s ease both;
+}
+
+.photo-card__image-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  cursor: zoom-in;
+}
+
+.photo-card__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.3s ease;
+}
+
+.photo-card__image.loaded {
+  opacity: 1;
+}
+
+.photo-card__image-wrapper:hover .photo-card__image.loaded {
+  transform: scale(1.02);
+}
+
+.photo-card__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.15) 0%,
+    transparent 30%,
+    transparent 60%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.25s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 12px;
+  border-radius: var(--radius-md);
+}
+
+.photo-card__image-wrapper:hover .photo-card__overlay {
+  opacity: 1;
+}
+
+.photo-card__save-btn {
+  align-self: flex-end;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  background: var(--pinterest-red);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: background-color 0.2s, transform 0.15s;
+}
+
+.photo-card__save-btn:hover {
+  background: var(--pinterest-red-hover);
+  transform: scale(1.05);
+}
+
+.photo-card__save-btn--saved {
+  background: #111;
+}
+
+.photo-card__save-btn--saved:hover {
+  background: #333;
+}
+
+.photo-card__bottom-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.photo-card__likes {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.photo-card__likes svg {
+  width: 14px;
+  height: 14px;
+  color: var(--pinterest-red);
+}
+
+.photo-card__action-group {
+  display: flex;
+  gap: 6px;
+}
+
+.photo-card__action-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: #111;
+  transition: background-color 0.2s, transform 0.15s;
+}
+
+.photo-card__action-circle:hover {
+  background: #fff;
+  transform: scale(1.1);
+}
+
+.photo-card__action-circle svg {
+  width: 16px;
+  height: 16px;
+}
+
+.photo-card__info {
+  padding: 8px 4px;
+}
+
+.photo-card__user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.photo-card__user:hover .photo-card__username {
+  text-decoration: underline;
+}
+
+.photo-card__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+
+.photo-card__user:hover .photo-card__avatar {
+  transform: scale(1.1);
+}
+
+.photo-card__username {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.skeleton-card {
+  break-inside: avoid;
+  margin-bottom: 16px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  animation: skeleton-card-in 0.4s ease both;
+}
+
+.skeleton-card__image,
+.skeleton-card__avatar,
+.skeleton-card__name {
+  background: linear-gradient(
+    110deg,
+    var(--skeleton-base) 30%,
+    var(--skeleton-shine) 50%,
+    var(--skeleton-base) 70%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite linear;
+}
+
+.skeleton-card__image {
+  width: 100%;
+  border-radius: var(--radius-md);
+}
+
+.skeleton-card__info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 4px;
+}
+
+.skeleton-card__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.skeleton-card__name {
+  width: 80px;
+  height: 12px;
+  border-radius: 6px;
+}
+
+@keyframes photo-card-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes skeleton-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .photo-card__overlay {
+    padding: 8px;
+  }
+
+  .photo-card__save-btn {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+  }
+
+  .photo-card__action-circle {
+    width: 28px;
+    height: 28px;
+  }
+}

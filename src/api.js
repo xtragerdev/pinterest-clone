@@ -1,26 +1,74 @@
-const ACCESS_KEY = "_v_ZPhiGbudb7DYFJwZgWA8io2TpTy5OjJdI6-mJKWc";
-const BASE = "https://api.unsplash.com";
+const ACCESS_KEY = import.meta.env.VITE_UNSPLASH_ACCESS_KEY;
+const BASE_URL = "https://api.unsplash.com";
+
+function getAuthHeaders() {
+  if (!ACCESS_KEY) {
+    throw new Error("Falta configurar VITE_UNSPLASH_ACCESS_KEY en el archivo .env.");
+  }
+
+  return {
+    Authorization: `Client-ID ${ACCESS_KEY}`,
+  };
+}
+
+function buildUrl(path, params = {}) {
+  const url = new URL(path, BASE_URL);
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      url.searchParams.set(key, String(value));
+    }
+  });
+
+  return url;
+}
+
+async function requestJson(path, { params, fallbackMessage } = {}) {
+  const response = await fetch(buildUrl(path, params), {
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error(fallbackMessage || "No fue posible completar la solicitud.");
+  }
+
+  return response.json();
+}
+
+function normalizePhotoList(payload) {
+  if (Array.isArray(payload)) return payload;
+  return payload.results || [];
+}
 
 export async function getPhotos(page = 1, perPage = 30) {
-  const res = await fetch(`${BASE}/photos?page=${page}&per_page=${perPage}&client_id=${ACCESS_KEY}`);
-  if (!res.ok) throw new Error("Error al obtener fotos");
-  return res.json();
+  return requestJson("/photos", {
+    params: { page, per_page: perPage },
+    fallbackMessage: "Error al obtener fotos.",
+  });
 }
 
 export async function searchPhotos(query, page = 1, perPage = 30) {
-  const res = await fetch(`${BASE}/search/photos?query=${encodeURIComponent(query)}&page=${page}&per_page=${perPage}&client_id=${ACCESS_KEY}`);
-  if (!res.ok) throw new Error("Error en la búsqueda");
-  const data = await res.json();
-  return data.results;
+  const data = await requestJson("/search/photos", {
+    params: { query, page, per_page: perPage },
+    fallbackMessage: "Error en la busqueda.",
+  });
+
+  return normalizePhotoList(data);
 }
 
 export async function getRelatedPhotos(id) {
-  const res = await fetch(`${BASE}/photos/${id}/related?client_id=${ACCESS_KEY}`);
-  if (!res.ok) return [];
-  const data = await res.json();
-  return data.results || [];
+  try {
+    const data = await requestJson(`/photos/${id}/related`);
+    return normalizePhotoList(data);
+  } catch {
+    return [];
+  }
 }
 
-export function triggerDownload(photo) {
-  fetch(`${BASE}/photos/${photo.id}/download?client_id=${ACCESS_KEY}`);
+export async function triggerDownload(photo) {
+  try {
+    await requestJson(`/photos/${photo.id}/download`);
+  } catch {
+    return;
+  }
 }

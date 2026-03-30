@@ -1,0 +1,44 @@
+.back-to-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 90;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--pinterest-red);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(230, 0, 35, 0.35);
+  opacity: 0;
+  transform: translateY(16px) scale(0.8);
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.back-to-top--visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.back-to-top:hover {
+  background: var(--pinterest-red-hover);
+  transform: translateY(-2px) scale(1.1);
+}
+
+.back-to-top svg {
+  width: 22px;
+  height: 22px;
+}
+
+@media (max-width: 768px) {
+  .back-to-top {
+    bottom: 80px;
+    right: 16px;
+    width: 42px;
+    height: 42px;
+  }
+}

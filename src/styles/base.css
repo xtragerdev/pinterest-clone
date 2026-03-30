@@ -1,0 +1,115 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root,
+[data-theme="light"] {
+  --pinterest-red: #e60023;
+  --pinterest-red-hover: #ad081b;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f0f0f0;
+  --bg-tertiary: #e2e2e2;
+  --bg-card: #ffffff;
+  --bg-overlay: rgba(0, 0, 0, 0.6);
+  --bg-modal: #ffffff;
+  --text-primary: #111111;
+  --text-secondary: #767676;
+  --text-tertiary: #b0b0b0;
+  --border-color: #efefef;
+  --shadow-card: 0 1px 6px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.15);
+  --shadow-modal: 0 20px 60px rgba(0, 0, 0, 0.3);
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+  --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --skeleton-base: #e0e0e0;
+  --skeleton-shine: #f5f5f5;
+  --sidebar-width: 240px;
+  --sidebar-collapsed: 72px;
+}
+
+[data-theme="dark"] {
+  --pinterest-red: #e60023;
+  --pinterest-red-hover: #ff3352;
+  --bg-primary: #121212;
+  --bg-secondary: #1e1e1e;
+  --bg-tertiary: #2a2a2a;
+  --bg-card: #1e1e1e;
+  --bg-overlay: rgba(0, 0, 0, 0.8);
+  --bg-modal: #1e1e1e;
+  --text-primary: #e8e8e8;
+  --text-secondary: #a0a0a0;
+  --text-tertiary: #666666;
+  --border-color: #2a2a2a;
+  --shadow-card: 0 1px 6px rgba(0, 0, 0, 0.3);
+  --shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --shadow-modal: 0 20px 60px rgba(0, 0, 0, 0.6);
+  --skeleton-base: #2a2a2a;
+  --skeleton-shine: #3a3a3a;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+input {
+  font-family: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--text-tertiary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}

@@ -1,0 +1,62 @@
+.app-shell {
+  min-height: 100vh;
+}
+
+.app__main {
+  min-height: 100vh;
+  min-width: 0;
+  margin-left: var(--sidebar-width);
+  transition: margin-left 0.3s ease;
+}
+
+body.sidebar-collapsed .app__main {
+  margin-left: var(--sidebar-collapsed);
+}
+
+.app__search-label {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 20px 16px 0;
+  animation: app-label-in 0.4s ease;
+}
+
+.app__search-label h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.app__search-label span {
+  color: var(--pinterest-red);
+}
+
+.app__sentinel {
+  height: 1px;
+}
+
+@keyframes app-label-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .app__main {
+    margin-left: 0;
+    padding-bottom: 70px;
+  }
+
+  .app__search-label {
+    padding: 16px 12px 0;
+  }
+
+  .app__search-label h2 {
+    font-size: 1.2rem;
+  }
+}
